@@ -36,6 +36,8 @@ namespace MyWallet.Data.Repository
 
         public IEnumerable<Income> GetByContextId(string contextId)
         {
+            return new List<Income>();
+
             var incomeList = _context.Income.Where(i => i.ContextId == contextId)
                   .Include(i => i.BankAccount)
                   .Include(i => i.Category)

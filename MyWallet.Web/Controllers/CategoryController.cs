@@ -1,4 +1,5 @@
-﻿using MyWallet.Data.Domain;
+﻿using MyWallet.Common.Extensions;
+using MyWallet.Data.Domain;
 using MyWallet.Data.Repository;
 using MyWallet.Web.ViewModels.Category;
 using System.Linq;
@@ -117,19 +118,18 @@ namespace MyWallet.Web.Controllers
             return RedirectToAction("Index");
         }
 
-        public JsonResult GetAllByContextId(int? contextId)
+        public JsonResult GetAllByContextId(string contextId)
         {
-            return null;
-            //var id = contextId.HasValue ? contextId.Value : GetCurrentContextId();
+            var id = contextId.IsNotNullOrEmpty() ? contextId : GetCurrentContextId();
 
-            //var listCategory = _unitOfWork.CategoryRepository.GetByContextId(id);
+            var listCategory = _unitOfWork.CategoryRepository.GetByContextId(id);
 
-            //var json = listCategory.Select(c => new
-            //{
-            //    c.Id,
-            //    c.Name
-            //});
-            //return Json(json, JsonRequestBehavior.AllowGet);
+            var json = listCategory.Select(c => new
+            {
+                c.Id,
+                c.Name
+            });
+            return Json(json, JsonRequestBehavior.AllowGet);
         }
 
         protected override void Dispose(bool disposing)

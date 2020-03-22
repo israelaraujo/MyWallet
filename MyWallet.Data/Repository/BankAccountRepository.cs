@@ -20,9 +20,9 @@ namespace MyWallet.Data.Repository
             _session.Store(bankAccount);
         }
 
-        public void Delete(BankAccount bankAccount)
+        public void Delete(string bankAccountId)
         {
-            _session.Delete(bankAccount);
+            _session.Delete(bankAccountId);
         }
 
         public IEnumerable<BankAccount> GetByContextId(string contextId)

@@ -103,7 +103,7 @@ namespace MyWallet.Web.Controllers
                             Observation = entry.Observation,
                             Value = -entry.Value
                         };
-                        _unitOfWork.ExpenseRepository.Add(expense);
+                        _unitOfWork.ExpenseRepository.Save(expense);
                     }
                 }
 

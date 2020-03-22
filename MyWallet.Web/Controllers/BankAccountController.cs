@@ -4,6 +4,7 @@ using System;
 using System.Linq;
 using System.Web.Mvc;
 using MyWallet.Data.Repository;
+using MyWallet.Common.Extensions;
 
 namespace MyWallet.Web.Controllers
 {
@@ -112,28 +113,25 @@ namespace MyWallet.Web.Controllers
         [HttpPost]
         public ActionResult Delete(BankAccountViewModel bankAccountViewModel)
         {
-            var bankAccount = new BankAccount { Id = bankAccountViewModel.Id };
-
-            _unitOfWork.BankAccountRepository.Delete(bankAccount);
+            _unitOfWork.BankAccountRepository.Delete(bankAccountViewModel.Id);
             _unitOfWork.Commit();
 
             return RedirectToAction("Index");
         }
 
-        public JsonResult GetAllByContextId(int? contextId)
+        public JsonResult GetAllByContextId(string contextId)
         {
-            return null;
-            //var id = contextId.HasValue ? contextId.Value : GetCurrentContextId();
+            var id = contextId.IsNotNullOrEmpty() ? contextId : GetCurrentContextId();
 
-            //var listBankAccount = _unitOfWork.BankAccountRepository.GetByContextId(id);
+            var listBankAccount = _unitOfWork.BankAccountRepository.GetByContextId(id);
 
-            //var json = listBankAccount.Select(b => new
-            //{
-            //    b.Id,
-            //    b.Name
-            //});
+            var json = listBankAccount.Select(b => new
+            {
+                b.Id,
+                b.Name
+            });
 
-            //return Json(json, JsonRequestBehavior.AllowGet);
+            return Json(json, JsonRequestBehavior.AllowGet);
         }
 
         protected override void Dispose(bool disposing)

@@ -63,7 +63,7 @@ namespace MyWallet.Web.Controllers
                 expense.Value = expenseViewModel.Value.Value;
                 expense.ContextId = GetCurrentContextId();
 
-                _unitOfWork.ExpenseRepository.Add(expense);
+                _unitOfWork.ExpenseRepository.Save(expense);
                 _unitOfWork.Commit();
 
                 return new HttpStatusCodeResult(HttpStatusCode.Created);
@@ -113,7 +113,7 @@ namespace MyWallet.Web.Controllers
                 expense.Value = viewModel.Value.Value;
                 expense.IsPaid = viewModel.IsPaid;
 
-                _unitOfWork.ExpenseRepository.Update(expense);
+                _unitOfWork.ExpenseRepository.Save(expense);
                 _unitOfWork.Commit();
 
                 return new HttpStatusCodeResult(HttpStatusCode.OK);
