@@ -33,8 +33,8 @@ namespace MyWallet.Data.RavenDB
                 Database = "MyWallet",
                 Conventions = new DocumentConventions
                 {
-                    CustomizeJsonSerializer = serializer =>
-                        serializer.NullValueHandling = Newtonsoft.Json.NullValueHandling.Ignore
+                    CustomizeJsonSerializer = serializer => serializer.NullValueHandling = Newtonsoft.Json.NullValueHandling.Ignore,
+                    IdentityPartsSeparator = "-"
                 }
             };
 
