@@ -1,4 +1,5 @@
 ﻿using MyWallet.Data.Domain;
+using Raven.Client.Documents.Session;
 using System;
 using System.Collections.Generic;
 using System.Linq;
@@ -7,70 +8,71 @@ namespace MyWallet.Data.Repository
 {
     public class BankAccountRepository
     {
-        private MyWalletDBContext _context;
+        private IDocumentSession _session;
 
-        public BankAccountRepository(MyWalletDBContext context)
+        public BankAccountRepository(IDocumentSession session)
         {
-            _context = context;
+            this._session = session;
         }
 
-        public void Add(BankAccount bankAccount)
+        public void Save(BankAccount bankAccount)
         {
-            _context.BankAccount.Add(bankAccount);
-        }
-
-        public void Update(BankAccount bankAccount)
-        {
-            _context.Entry(bankAccount).State = System.Data.Entity.EntityState.Modified;
+            _session.Store(bankAccount);
         }
 
         public void Delete(BankAccount bankAccount)
         {
-            _context.Entry(bankAccount).State = System.Data.Entity.EntityState.Deleted;
+            _session.Delete(bankAccount);
         }
 
         public IEnumerable<BankAccount> GetByContextId(string contextId)
         {
-            return _context.BankAccount.Where(b => b.ContextId == contextId).ToList();
+            return _session
+                .Query<BankAccount>()
+                .Where(b => b.ContextId == contextId)
+                .ToList();
         }
 
         public BankAccount GetById(string id)
         {
-            return _context.BankAccount.Find(id);
+            return _session.Load<BankAccount>(id);
         }
 
         public IEnumerable<BankAccount> GetByName(IEnumerable<string> bankAccountNames, string contextId)
         {
-            var query = _context.BankAccount.Where(b => b.ContextId == contextId && bankAccountNames.Contains(b.Name));
-            return query.ToList();
+            return _session
+                .Query<BankAccount>()
+                .Where(b => b.ContextId == contextId && bankAccountNames.Contains(b.Name))
+                .ToList();
         }
 
         public IEnumerable<BankAccount> CreateIfNotExistsAndReturnAll(IEnumerable<string> newBankAccountsName, string contextId)
         {
-            var existentBankAccounts = GetByName(newBankAccountsName, contextId);
-            
-            var allBankAccounts = new List<BankAccount>();
-            foreach (var bankAccountName in newBankAccountsName)
-            {
-                var bankAccount = existentBankAccounts.FirstOrDefault(b => b.Name == bankAccountName);
-                if (bankAccount == null)
-                {
-                    var newBankAccount = new BankAccount
-                    {
-                        Name = bankAccountName,
-                        ContextId = contextId,
-                        CreationDate = DateTime.Now,
-                        OpeningBalance = 0
-                    };
+            //var existentBankAccounts = GetByName(newBankAccountsName, contextId);
 
-                    Add(newBankAccount);
+            //var allBankAccounts = new List<BankAccount>();
+            //foreach (var bankAccountName in newBankAccountsName)
+            //{
+            //    var bankAccount = existentBankAccounts.FirstOrDefault(b => b.Name == bankAccountName);
+            //    if (bankAccount == null)
+            //    {
+            //        var newBankAccount = new BankAccount
+            //        {
+            //            Name = bankAccountName,
+            //            ContextId = contextId,
+            //            CreationDate = DateTime.Now,
+            //            OpeningBalance = 0
+            //        };
 
-                    allBankAccounts.Add(newBankAccount);
-                }
-            }
+            //        AddOrUpdate(newBankAccount);
 
-            allBankAccounts.AddRange(existentBankAccounts);
-            return allBankAccounts;
+            //        allBankAccounts.Add(newBankAccount);
+            //    }
+            //}
+
+            //allBankAccounts.AddRange(existentBankAccounts);
+            //return allBankAccounts;
+            return null;
         }
     }
 }

@@ -29,9 +29,9 @@ namespace MyWallet.Data.Repository
         private ReportRepository _reportRepository;
         private bool _disposed;
 
-        public BankAccountRepository BankAccountRepository => _bankAccountRepository ?? new BankAccountRepository(_context);
-        public CategoryRepository CategoryRepository => _categoryRepository ?? new CategoryRepository(_context);
-        public ContextRepository ContextRepository => _contextRepository ?? new ContextRepository(_context);
+        public BankAccountRepository BankAccountRepository => _bankAccountRepository ?? new BankAccountRepository(_session);
+        public CategoryRepository CategoryRepository => _categoryRepository ?? new CategoryRepository(_session);
+        public ContextRepository ContextRepository => _contextRepository ?? new ContextRepository(_session);
         public CountryRepository CountryRepository => _countryRepository ?? new CountryRepository(_context);
         public CurrencyTypeRepository CurrencyTypeRepository => _currencyTypeRepository ?? new CurrencyTypeRepository(_context);
         public ExpenseRepository ExpenseRepository => _expenseRepository ?? new ExpenseRepository(_context);
@@ -54,7 +54,8 @@ namespace MyWallet.Data.Repository
         {
             if (!this._disposed && disposing)
             {
-                _context.Dispose();
+                //_documentStore.Dispose();
+                //_session.Dispose();
             }
             this._disposed = true;
         }

@@ -1,48 +1,46 @@
 ﻿using MyWallet.Data.Domain;
-using System;
+using Raven.Client.Documents.Session;
 using System.Collections.Generic;
-using System.Data.Entity;
 using System.Linq;
 
 namespace MyWallet.Data.Repository
 {
     public class ContextRepository
     {
-        private MyWalletDBContext _context;
+        private IDocumentSession session;
 
-        public ContextRepository(MyWalletDBContext context)
+        public ContextRepository(IDocumentSession session)
         {
-            _context = context;
+            this.session = session;
         }
 
         public void Save(Context context)
         {
-            _context.Context.Add(context);
+            session.Store(context);
         }
 
         public void Delete(Context context)
         {
-            _context.Entry(context).State = System.Data.Entity.EntityState.Deleted;
+            session.Delete(context);
         }
 
         public Context GetById(string id)
         {
-            return _context.Context.Find(id);
+            return session.Load<Context>(id);
         }
 
         public IEnumerable<Context> GetByUserId(string userId)
         {
-            return _context.Context
-                .Include(c => c.CurrencyType)
-                .Include(c => c.Country)
-                .Where(c => c.UserId == userId)
-                .ToList();
+            //return session.Query<Context>()
+            //    .Where(c => c.UserId == userId)
+            //    .ToList();
+            return null;
         }
 
         public void SetTheMainContextAsNonMain(string userId)
         {
-            var mainContext = _context.Context.FirstOrDefault(c => c.UserId == userId && c.IsMainContext);
-            mainContext.IsMainContext = false;
+            //var mainContext = _context.Context.FirstOrDefault(c => c.UserId == userId && c.IsMainContext);
+            //mainContext.IsMainContext = false;
         }
     }
 }

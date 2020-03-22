@@ -31,7 +31,20 @@ namespace MyWallet.Web.Controllers
                 return View(userViewModel);
             }
 
-            var user = new User();
+            User user;
+            Context mainContext;
+            
+            SaveNewUser(userViewModel, out user, out mainContext);
+
+            // Login into plataform - bacause of the Autorization (attribute)
+            CookieUtil.SetAuthCookie(user.Id, user.Name, mainContext.Id);
+
+            return RedirectToAction("Index", "Dashboard");
+        }
+
+        private void SaveNewUser(UserViewModel userViewModel, out User user, out Context mainContext)
+        {
+            user = new User();
             user.Name = userViewModel.Name;
             user.LastName = userViewModel.LastName;
             user.Email = userViewModel.Email;
@@ -40,7 +53,7 @@ namespace MyWallet.Web.Controllers
 
             _unitOfWork.UserRepository.Save(user);
 
-            var mainContext = new Context
+            mainContext = new Context
             {
                 UserId = user.Id,
                 IsMainContext = true,
@@ -63,14 +76,9 @@ namespace MyWallet.Web.Controllers
                 Name = "My Bank Account (Default)",
                 CreationDate = DateTime.Now,
             };
-            _unitOfWork.BankAccountRepository.Add(mainBankAccount);
+            _unitOfWork.BankAccountRepository.Save(mainBankAccount);
 
             _unitOfWork.Commit();
-
-            // Login into plataform - bacause of the Autorization (attribute)
-            CookieUtil.SetAuthCookie(user.Id, user.Name, user.GetTheMainContextId());
-
-            return RedirectToAction("Index", "Dashboard");
         }
 
         public ActionResult ResetPassword()

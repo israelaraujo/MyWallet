@@ -1,49 +1,46 @@
 ﻿using MyWallet.Data.Domain;
+using Raven.Client.Documents.Session;
+using System;
 using System.Collections.Generic;
 using System.Linq;
-using System.Data.Entity;
-using System.Web.Mvc;
 
 namespace MyWallet.Data.Repository
 {
     public class CategoryRepository
     {
-        private MyWalletDBContext _context;
+        private IDocumentSession session;
 
-        public CategoryRepository(MyWalletDBContext context)
+        public CategoryRepository(IDocumentSession session)
         {
-            _context = context;
+            this.session = session;
         }
 
         public void Save(Category category)
         {
-            _context.Category.Add(category);
+            session.Store(category);
         }
 
         public void Delete(Category category)
         {
-            _context.Entry(category).State = EntityState.Deleted;
-        }
-
-        public Category GetById(string id)
-        {
-            return _context.Category.Find(id);
+            session.Delete(category);
         }
 
         public IEnumerable<Category> GetByName(IEnumerable<string> categories, string contextId)
         {
-            var query = _context.Category.Where(c => c.ContextId == contextId && categories.Contains(c.Name));
-            return query.ToList();
-        }
-
-        public IEnumerable<Category> GetAll()
-        {
-            return _context.Category.ToList();
+            //var query = _context.Category.Where(c => c.ContextId == contextId && categories.Contains(c.Name));
+            //return query.ToList();
+            return null;
         }
 
         public IEnumerable<Category> GetByContextId(string contextId)
         {
-            return _context.Category.Where(c => c.ContextId == contextId).ToList();
+            return null;
+            //TODO: implement later index query
+            //var user = session.Query<User>().FirstOrDefault(u => u.Id == userId);
+
+            //var categories = user.Categories.Where(c => c.ContextId == contextId);
+
+            //return categories;
         }
 
         public IEnumerable<Category> GetStandardCategories()
@@ -69,20 +66,25 @@ namespace MyWallet.Data.Repository
             var existentCategories = GetByName(newCategoriesName, contextId);
 
             var allCategories = new List<Category>();
-            foreach (var categoryName in newCategoriesName)
-            {
-                var category = existentCategories.FirstOrDefault(c => c.Name == categoryName);
-                if (category == null)
-                {
-                    var newCategory = new Category { Name = categoryName, ContextId = contextId };
-                    Save(newCategory);
-                    allCategories.Add(newCategory);
-                }
-            }
+            //foreach (var categoryName in newCategoriesName)
+            //{
+            //    var category = existentCategories.FirstOrDefault(c => c.Name == categoryName);
+            //    if (category == null)
+            //    {
+            //        var newCategory = new Category { Name = categoryName, ContextId = contextId };
+            //        AddOrUpdate(newCategory);
+            //        allCategories.Add(newCategory);
+            //    }
+            //}
 
-            allCategories.AddRange(existentCategories);
+            //allCategories.AddRange(existentCategories);
 
             return allCategories;
+        }
+
+        public Category GetById(string id)
+        {
+            return session.Load<Category>(id);
         }
     }
 }

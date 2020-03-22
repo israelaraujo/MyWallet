@@ -62,7 +62,7 @@ namespace MyWallet.Web.Controllers
 
         public ActionResult Edit(string id)
         {
-            var category = _unitOfWork.CategoryRepository.GetById(id);
+            Category category = _unitOfWork.CategoryRepository.GetById(id);
 
             var categoryViewModel = new CategoryViewModel
             {

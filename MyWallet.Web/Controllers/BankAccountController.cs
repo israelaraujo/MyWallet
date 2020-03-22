@@ -52,7 +52,7 @@ namespace MyWallet.Web.Controllers
                 bankAccount.ContextId = GetCurrentContextId();
                 bankAccount.CreationDate = DateTime.Now;
 
-                _unitOfWork.BankAccountRepository.Add(bankAccount);
+                _unitOfWork.BankAccountRepository.Save(bankAccount);
                 _unitOfWork.Commit();
 
                 return RedirectToAction("Index");
@@ -86,7 +86,7 @@ namespace MyWallet.Web.Controllers
                 bankAccountUpdate.Name = bankAccountViewModel.Name;
                 bankAccountUpdate.OpeningBalance = bankAccountViewModel.OpeningBalance.Value;
 
-                _unitOfWork.BankAccountRepository.Update(bankAccountUpdate);
+                _unitOfWork.BankAccountRepository.Save(bankAccountUpdate);
                 _unitOfWork.Commit();
 
                 return RedirectToAction("Index");
