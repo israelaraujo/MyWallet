@@ -13,6 +13,6 @@ namespace MyWallet.Data.DTO.Report
         public string Description { get; set; }
         public int? Type { get; set; }
         public bool? Situation { get; set; }
-        public int ContextId { get; set; }
+        public string ContextId { get; set; }
     }
 }

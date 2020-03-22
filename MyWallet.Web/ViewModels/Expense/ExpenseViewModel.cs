@@ -8,7 +8,7 @@ namespace MyWallet.Web.ViewModels.Expense
 {
     public class ExpenseViewModel
     {
-        public int Id { get; set; }
+        public string Id { get; set; }
 
         [Required]
         public string Description { get; set; }
@@ -26,11 +26,11 @@ namespace MyWallet.Web.ViewModels.Expense
 
         [Required]
         [DisplayName("Bank Account")]
-        public int? BankAccountId { get; set; }
+        public string BankAccountId { get; set; }
 
         [Required]
         [DisplayName("Category")]
-        public int? CategoryId { get; set; }
+        public string CategoryId { get; set; }
 
         // Auxiliar labels
         public string Category { get; set; }

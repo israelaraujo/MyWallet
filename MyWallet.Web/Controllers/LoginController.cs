@@ -30,7 +30,7 @@ namespace MyWallet.Web.Controllers
             if (ModelState.IsValid)
             {
                 var userDatabase = _unitOfWork.UserRepository
-                    .GetByEmailAndPassword(loginViewModel.Email, CryptographyUtil.Encrypt(loginViewModel.Password));
+                    .GetByEmailAndPassword(loginViewModel.Email, loginViewModel.Password);
 
                 if (userDatabase == null)
                 {

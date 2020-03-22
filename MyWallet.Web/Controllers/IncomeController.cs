@@ -49,8 +49,8 @@ namespace MyWallet.Web.Controllers
         {
             var income = new Income()
             {
-                BankAccountId = viewModel.BankAccountId.Value,
-                CategoryId = viewModel.CategoryId.Value,
+                BankAccountId = viewModel.BankAccountId,
+                CategoryId = viewModel.CategoryId,
                 ContextId = GetCurrentContextId(),
                 CreationDate = DateTime.Now,
                 Date = viewModel.Date.Value,
@@ -66,7 +66,7 @@ namespace MyWallet.Web.Controllers
         }
 
         [HttpPost]
-        public HttpStatusCodeResult Delete(int id)
+        public HttpStatusCodeResult Delete(string id)
         {
             _unitOfWork.IncomeRepository.Delete(new Income { Id = id});
             _unitOfWork.Commit();
@@ -99,7 +99,7 @@ namespace MyWallet.Web.Controllers
             return PartialView("PartialView/_IncomeList",viewModelList);
         }
 
-        public PartialViewResult GetIncomeById(int id)
+        public PartialViewResult GetIncomeById(string id)
         {
             var income = _unitOfWork.IncomeRepository.GetById(id);
             var incomeViewModel = new IncomeViewModel
@@ -136,8 +136,8 @@ namespace MyWallet.Web.Controllers
                 var income = _unitOfWork.IncomeRepository.GetById(viewModel.Id);
                 income.Date = viewModel.Date.Value;
                 income.Description = viewModel.Description;
-                income.CategoryId = viewModel.CategoryId.Value;
-                income.BankAccountId = viewModel.BankAccountId.Value;
+                income.CategoryId = viewModel.CategoryId;
+                income.BankAccountId = viewModel.BankAccountId;
                 income.Value = viewModel.Value.Value;
                 income.Received = viewModel.Received;
 

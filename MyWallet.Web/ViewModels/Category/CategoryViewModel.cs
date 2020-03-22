@@ -4,7 +4,7 @@ namespace MyWallet.Web.ViewModels.Category
 {
     public class CategoryViewModel
     {
-        public int Id { get; set; }
+        public string Id { get; set; }
         
         [Required]
         public string Name { get; set; }

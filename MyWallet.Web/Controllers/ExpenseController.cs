@@ -53,8 +53,8 @@ namespace MyWallet.Web.Controllers
             if (ModelState.IsValid)
             {
                 var expense = new Expense();
-                expense.BankAccountId = expenseViewModel.BankAccountId.Value;
-                expense.CategoryId = expenseViewModel.CategoryId.Value;
+                expense.BankAccountId = expenseViewModel.BankAccountId;
+                expense.CategoryId = expenseViewModel.CategoryId;
                 expense.CreationDate = DateTime.Now;
                 expense.Date = expenseViewModel.Date.Value;
                 expense.Description = expenseViewModel.Description;
@@ -71,7 +71,7 @@ namespace MyWallet.Web.Controllers
             return new HttpStatusCodeResult(HttpStatusCode.BadRequest);
         }
 
-        public PartialViewResult GetExpenseById(int id)
+        public PartialViewResult GetExpenseById(string id)
         {
             var expense = _unitOfWork.ExpenseRepository.GetById(id);
             var expenseViewModel = new ExpenseViewModel
@@ -108,8 +108,8 @@ namespace MyWallet.Web.Controllers
                 var expense = _unitOfWork.ExpenseRepository.GetById(viewModel.Id);
                 expense.Date = viewModel.Date.Value;
                 expense.Description = viewModel.Description;
-                expense.CategoryId = viewModel.CategoryId.Value;
-                expense.BankAccountId = viewModel.BankAccountId.Value;
+                expense.CategoryId = viewModel.CategoryId;
+                expense.BankAccountId = viewModel.BankAccountId;
                 expense.Value = viewModel.Value.Value;
                 expense.IsPaid = viewModel.IsPaid;
 
@@ -125,7 +125,7 @@ namespace MyWallet.Web.Controllers
         }
 
         [HttpPost]
-        public HttpStatusCodeResult Delete(int id)
+        public HttpStatusCodeResult Delete(string id)
         {
             _unitOfWork.ExpenseRepository.Delete(id);
             _unitOfWork.Commit();

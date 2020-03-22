@@ -19,7 +19,7 @@ namespace MyWallet.Data.Repository
             return _context.CurrencyType.ToList();
         }
 
-        public string GetCurrencySymbolByContextId(int contextId)
+        public string GetCurrencySymbolByContextId(string contextId)
         {
             var currencySymbol = _context.Context
                 .Include(c => c.CurrencyType)

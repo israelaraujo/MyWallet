@@ -15,14 +15,9 @@ namespace MyWallet.Data.Repository
             _context = context;
         }
 
-        public void Add(Context context)
+        public void Save(Context context)
         {
             _context.Context.Add(context);
-        }
-
-        public void Update(Context context)
-        {
-            _context.Entry(context).State = System.Data.Entity.EntityState.Modified;
         }
 
         public void Delete(Context context)
@@ -30,12 +25,12 @@ namespace MyWallet.Data.Repository
             _context.Entry(context).State = System.Data.Entity.EntityState.Deleted;
         }
 
-        public Context GetById(int id)
+        public Context GetById(string id)
         {
             return _context.Context.Find(id);
         }
 
-        public IEnumerable<Context> GetByUserId(int userId)
+        public IEnumerable<Context> GetByUserId(string userId)
         {
             return _context.Context
                 .Include(c => c.CurrencyType)
@@ -44,7 +39,7 @@ namespace MyWallet.Data.Repository
                 .ToList();
         }
 
-        public void SetTheMainContextAsNonMain(int userId)
+        public void SetTheMainContextAsNonMain(string userId)
         {
             var mainContext = _context.Context.FirstOrDefault(c => c.UserId == userId && c.IsMainContext);
             mainContext.IsMainContext = false;

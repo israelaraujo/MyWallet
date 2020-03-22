@@ -11,7 +11,6 @@ namespace MyWallet.Web.Controllers
     public class UserController : BaseController
     {
         private UnitOfWork _unitOfWork;
-        
 
         public UserController()
         {
@@ -26,56 +25,52 @@ namespace MyWallet.Web.Controllers
         [HttpPost]
         public ActionResult Create(UserViewModel userViewModel)
         {
-            if (ModelState.IsValid)
-            {
-                var user = new User();
-
-                user.Name = userViewModel.Name;
-                user.LastName = userViewModel.LastName;
-                user.Email = userViewModel.Email;
-                user.Password = CryptographyUtil.Encrypt(userViewModel.Password);
-                user.CreationDate = DateTime.Now;
-                
-
-                var mainContext = new Context
-                {
-                    UserId = user.Id,
-                    IsMainContext = true,
-                    Name = "My Finances (Default)",
-                    CountryId = 1, //TODO implement
-                    CurrencyTypeId = 1
-                };
-
-
-                var categories = _unitOfWork.CategoryRepository.GetStandardCategories();
-                foreach (var category in categories)
-                {
-                    category.ContextId = mainContext.Id;
-                }
-
-                var mainBankAccount = new BankAccount
-                {
-                    ContextId = mainContext.Id,
-                    Name = "My Bank Account (Default)",
-                    CreationDate = DateTime.Now,
-                };
-
-                _unitOfWork.UserRepository.Add(user);
-                _unitOfWork.ContextRepository.Add(mainContext);
-                _unitOfWork.CategoryRepository.Add(categories);
-                _unitOfWork.BankAccountRepository.Add(mainBankAccount);
-                _unitOfWork.Commit();
-
-                // Login into plataform - bacause of the Autorization (attribute)
-                CookieUtil.SetAuthCookie(user.Id, user.Name, user.GetTheMainContextId());
-
-                return RedirectToAction("Index", "Dashboard");
-            }
-            else
+            if (!ModelState.IsValid)
             {
                 SendModelStateErrors();
                 return View(userViewModel);
             }
+
+            var user = new User();
+            user.Name = userViewModel.Name;
+            user.LastName = userViewModel.LastName;
+            user.Email = userViewModel.Email;
+            user.Password = CryptographyUtil.Encrypt(userViewModel.Password);
+            user.CreationDate = DateTime.Now;
+
+            _unitOfWork.UserRepository.Save(user);
+
+            var mainContext = new Context
+            {
+                UserId = user.Id,
+                IsMainContext = true,
+                Name = "My Finances (Default)",
+                CountryId = "1", //TODO implement
+                CurrencyTypeId = "1"
+            };
+            _unitOfWork.ContextRepository.Save(mainContext);
+
+            var categories = _unitOfWork.CategoryRepository.GetStandardCategories();
+            foreach (var category in categories)
+            {
+                category.ContextId = mainContext.Id;
+                _unitOfWork.CategoryRepository.Save(category);
+            }
+
+            var mainBankAccount = new BankAccount
+            {
+                ContextId = mainContext.Id,
+                Name = "My Bank Account (Default)",
+                CreationDate = DateTime.Now,
+            };
+            _unitOfWork.BankAccountRepository.Add(mainBankAccount);
+
+            _unitOfWork.Commit();
+
+            // Login into plataform - bacause of the Autorization (attribute)
+            CookieUtil.SetAuthCookie(user.Id, user.Name, user.GetTheMainContextId());
+
+            return RedirectToAction("Index", "Dashboard");
         }
 
         public ActionResult ResetPassword()
@@ -128,7 +123,7 @@ namespace MyWallet.Web.Controllers
                 user.Email = userViewModel.Email;
                 user.Password = CryptographyUtil.Encrypt(userViewModel.Password);
 
-                _unitOfWork.UserRepository.Update(user);
+                _unitOfWork.UserRepository.Save(user);
                 _unitOfWork.Commit();
 
                 return RedirectToAction("Index", "Dashboard");

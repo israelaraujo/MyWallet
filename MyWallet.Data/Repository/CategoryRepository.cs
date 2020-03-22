@@ -15,19 +15,9 @@ namespace MyWallet.Data.Repository
             _context = context;
         }
 
-        public void Add(Category category)
+        public void Save(Category category)
         {
             _context.Category.Add(category);
-        }
-
-        public void Add(IEnumerable<Category> categories)
-        {
-            _context.Category.AddRange(categories);
-        }
-
-        public void Update(Category category)
-        {
-            _context.Entry(category).State = EntityState.Modified;
         }
 
         public void Delete(Category category)
@@ -35,12 +25,12 @@ namespace MyWallet.Data.Repository
             _context.Entry(category).State = EntityState.Deleted;
         }
 
-        public Category GetById(int id)
+        public Category GetById(string id)
         {
             return _context.Category.Find(id);
         }
 
-        public IEnumerable<Category> GetByName(IEnumerable<string> categories, int contextId)
+        public IEnumerable<Category> GetByName(IEnumerable<string> categories, string contextId)
         {
             var query = _context.Category.Where(c => c.ContextId == contextId && categories.Contains(c.Name));
             return query.ToList();
@@ -51,7 +41,7 @@ namespace MyWallet.Data.Repository
             return _context.Category.ToList();
         }
 
-        public IEnumerable<Category> GetByContextId(int contextId)
+        public IEnumerable<Category> GetByContextId(string contextId)
         {
             return _context.Category.Where(c => c.ContextId == contextId).ToList();
         }
@@ -74,7 +64,7 @@ namespace MyWallet.Data.Repository
             };
         }
 
-        public IEnumerable<Category> CreateIfNotExistsAndReturnAll(IEnumerable<string> newCategoriesName, int contextId)
+        public IEnumerable<Category> CreateIfNotExistsAndReturnAll(IEnumerable<string> newCategoriesName, string contextId)
         {
             var existentCategories = GetByName(newCategoriesName, contextId);
 
@@ -85,7 +75,7 @@ namespace MyWallet.Data.Repository
                 if (category == null)
                 {
                     var newCategory = new Category { Name = categoryName, ContextId = contextId };
-                    Add(newCategory);
+                    Save(newCategory);
                     allCategories.Add(newCategory);
                 }
             }

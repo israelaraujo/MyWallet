@@ -29,23 +29,23 @@ namespace MyWallet.Data.Repository
             _context.Entry(bankAccount).State = System.Data.Entity.EntityState.Deleted;
         }
 
-        public IEnumerable<BankAccount> GetByContextId(int contextId)
+        public IEnumerable<BankAccount> GetByContextId(string contextId)
         {
             return _context.BankAccount.Where(b => b.ContextId == contextId).ToList();
         }
 
-        public BankAccount GetById(int id)
+        public BankAccount GetById(string id)
         {
             return _context.BankAccount.Find(id);
         }
 
-        public IEnumerable<BankAccount> GetByName(IEnumerable<string> bankAccountNames, int contextId)
+        public IEnumerable<BankAccount> GetByName(IEnumerable<string> bankAccountNames, string contextId)
         {
             var query = _context.BankAccount.Where(b => b.ContextId == contextId && bankAccountNames.Contains(b.Name));
             return query.ToList();
         }
 
-        public IEnumerable<BankAccount> CreateIfNotExistsAndReturnAll(IEnumerable<string> newBankAccountsName, int contextId)
+        public IEnumerable<BankAccount> CreateIfNotExistsAndReturnAll(IEnumerable<string> newBankAccountsName, string contextId)
         {
             var existentBankAccounts = GetByName(newBankAccountsName, contextId);
             

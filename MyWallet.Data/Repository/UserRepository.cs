@@ -1,40 +1,31 @@
 ﻿using MyWallet.Data.Domain;
-using System.Data.Entity;
+using Raven.Client.Documents.Session;
 using System.Linq;
 
 namespace MyWallet.Data.Repository
 {
     public class UserRepository
     {
-        private MyWalletDBContext _context;
+        private readonly IDocumentSession _session;
 
-        public UserRepository(MyWalletDBContext context)
+        public UserRepository(IDocumentSession session)
         {
-            _context = context;
+            _session = session;
         }
 
-        public void Add(User user)
+        public void Save(User user)
         {
-            _context.User.Add(user);
+            _session.Store(user);
         }
 
-        public void Update(User user)
+        public User GetById(string id)
         {
-            _context.Entry(user).State = EntityState.Modified;
-        }
-
-        public User GetById(int id)
-        {
-            return _context.User.Find(id);
+            return _session.Load<User>(id);
         }
 
         public User GetByEmailAndPassword(string email, string password)
         {
-            var userWithContexts = _context.User
-                           .Include(u => u.Contexts)
-                           .FirstOrDefault(u => u.Email == email && u.Password == password);
-
-            return userWithContexts;
+            return _session.Query<User>().FirstOrDefault(u => u.Email == email && u.Password == password);
         }
     }
 }

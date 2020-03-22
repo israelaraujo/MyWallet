@@ -52,8 +52,8 @@ namespace MyWallet.Web.Controllers
             {
                 var context = new Context();
                 context.Name = contextViewModel.Name;
-                context.CurrencyTypeId = contextViewModel.CurrencyTypeId.Value;
-                context.CountryId = contextViewModel.CountryId.Value;
+                context.CurrencyTypeId = contextViewModel.CurrencyTypeId;
+                context.CountryId = contextViewModel.CountryId;
                 context.IsMainContext = contextViewModel.IsMainContext;
                 context.UserId = GetCurrentUserId();
 
@@ -62,7 +62,7 @@ namespace MyWallet.Web.Controllers
                     _unitOfWork.ContextRepository.SetTheMainContextAsNonMain(context.UserId);
                 }
 
-                _unitOfWork.ContextRepository.Add(context);
+                _unitOfWork.ContextRepository.Save(context);
                 _unitOfWork.Commit();
 
                 return RedirectToAction("Index");
@@ -75,7 +75,7 @@ namespace MyWallet.Web.Controllers
             }
         }
 
-        public ActionResult Update(int id)
+        public ActionResult Update(string id)
         {
             var context = _unitOfWork.ContextRepository.GetById(id);
 
@@ -100,8 +100,8 @@ namespace MyWallet.Web.Controllers
             {
                 var oldContext = _unitOfWork.ContextRepository.GetById(contextViewModel.Id);
                 oldContext.Name = contextViewModel.Name;
-                oldContext.CurrencyTypeId = contextViewModel.CurrencyTypeId.Value;
-                oldContext.CountryId = contextViewModel.CountryId.Value;
+                oldContext.CurrencyTypeId = contextViewModel.CurrencyTypeId;
+                oldContext.CountryId = contextViewModel.CountryId;
                 oldContext.UserId = GetCurrentUserId();
 
                 if (!oldContext.IsMainContext && contextViewModel.IsMainContext)
@@ -110,7 +110,7 @@ namespace MyWallet.Web.Controllers
                     oldContext.IsMainContext = contextViewModel.IsMainContext;
                 }
 
-                _unitOfWork.ContextRepository.Update(oldContext);
+                _unitOfWork.ContextRepository.Save(oldContext);
                 _unitOfWork.Commit();
 
                 return RedirectToAction("Index");
@@ -123,7 +123,7 @@ namespace MyWallet.Web.Controllers
             }
         }
 
-        public ActionResult Delete(int id)
+        public ActionResult Delete(string id)
         {
             var context = _unitOfWork.ContextRepository.GetById(id);
             var viewModel = new ContextViewModel()

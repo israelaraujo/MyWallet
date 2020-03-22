@@ -64,7 +64,7 @@ namespace MyWallet.Web.Controllers
             }
         }
 
-        public ActionResult Edit(int id)
+        public ActionResult Edit(string id)
         {
             var bankAccount = _unitOfWork.BankAccountRepository.GetById(id);
 
@@ -98,7 +98,7 @@ namespace MyWallet.Web.Controllers
             }
         }
 
-        public ActionResult Delete(int id)
+        public ActionResult Delete(string id)
         {
             var bankAccount = _unitOfWork.BankAccountRepository.GetById(id);
             var viewModel = new BankAccountViewModel()
@@ -122,17 +122,18 @@ namespace MyWallet.Web.Controllers
 
         public JsonResult GetAllByContextId(int? contextId)
         {
-            var id = contextId.HasValue ? contextId.Value : GetCurrentContextId();
+            return null;
+            //var id = contextId.HasValue ? contextId.Value : GetCurrentContextId();
 
-            var listBankAccount = _unitOfWork.BankAccountRepository.GetByContextId(id);
+            //var listBankAccount = _unitOfWork.BankAccountRepository.GetByContextId(id);
 
-            var json = listBankAccount.Select(b => new
-            {
-                b.Id,
-                b.Name
-            });
+            //var json = listBankAccount.Select(b => new
+            //{
+            //    b.Id,
+            //    b.Name
+            //});
 
-            return Json(json, JsonRequestBehavior.AllowGet);
+            //return Json(json, JsonRequestBehavior.AllowGet);
         }
 
         protected override void Dispose(bool disposing)

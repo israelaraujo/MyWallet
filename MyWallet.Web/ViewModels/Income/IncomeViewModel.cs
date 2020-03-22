@@ -14,7 +14,7 @@ namespace MyWallet.Web.ViewModels.Income
             SelectListCategory = new List<SelectListItem>();
         }
 
-        public int Id { get; set; }
+        public string Id { get; set; }
 
         [Required]
         public string Description { get; set; }
@@ -31,11 +31,11 @@ namespace MyWallet.Web.ViewModels.Income
 
         [Required]
         [DisplayName("Bank Account")]
-        public int? BankAccountId { get; set; }
+        public string BankAccountId { get; set; }
 
         [Required]
         [DisplayName("Category")]
-        public int? CategoryId { get; set; }
+        public string CategoryId { get; set; }
 
         // Auxiliar labels
         public string Category { get; set; }

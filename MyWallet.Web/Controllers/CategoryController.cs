@@ -48,7 +48,7 @@ namespace MyWallet.Web.Controllers
                     Name = categoryViewModel.Name,
                     ContextId = GetCurrentContextId()
                 };
-                _unitOfWork.CategoryRepository.Add(category);
+                _unitOfWork.CategoryRepository.Save(category);
                 _unitOfWork.Commit();
 
                 return RedirectToAction("Index");
@@ -60,7 +60,7 @@ namespace MyWallet.Web.Controllers
             }
         }
 
-        public ActionResult Edit(int id)
+        public ActionResult Edit(string id)
         {
             var category = _unitOfWork.CategoryRepository.GetById(id);
 
@@ -84,7 +84,7 @@ namespace MyWallet.Web.Controllers
                     Name = categoryViewModel.Name,
                     ContextId = GetCurrentContextId()
                 };
-                _unitOfWork.CategoryRepository.Update(category);
+                _unitOfWork.CategoryRepository.Save(category);
                 _unitOfWork.Commit();
 
                 return RedirectToAction("Index");
@@ -96,7 +96,7 @@ namespace MyWallet.Web.Controllers
             }
         }
 
-        public ActionResult Delete(int id)
+        public ActionResult Delete(string id)
         {
             var category = _unitOfWork.CategoryRepository.GetById(id);
             var viewModel = new CategoryViewModel()
@@ -123,16 +123,17 @@ namespace MyWallet.Web.Controllers
 
         public JsonResult GetAllByContextId(int? contextId)
         {
-            var id = contextId.HasValue ? contextId.Value : GetCurrentContextId();
+            return null;
+            //var id = contextId.HasValue ? contextId.Value : GetCurrentContextId();
 
-            var listCategory = _unitOfWork.CategoryRepository.GetByContextId(id);
+            //var listCategory = _unitOfWork.CategoryRepository.GetByContextId(id);
 
-            var json = listCategory.Select(c => new
-            {
-                c.Id,
-                c.Name
-            });
-            return Json(json, JsonRequestBehavior.AllowGet);
+            //var json = listCategory.Select(c => new
+            //{
+            //    c.Id,
+            //    c.Name
+            //});
+            //return Json(json, JsonRequestBehavior.AllowGet);
         }
 
         protected override void Dispose(bool disposing)

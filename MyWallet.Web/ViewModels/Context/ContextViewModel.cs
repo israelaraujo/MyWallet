@@ -5,18 +5,18 @@ namespace MyWallet.Web.ViewModels.Context
 {
     public class ContextViewModel
     {
-        public int Id { get; set; }
+        public string Id { get; set; }
 
         [Required]
         public string Name { get; set; }
 
         [Required]
         [DisplayName("Currency")]
-        public int? CurrencyTypeId { get; set; }
+        public string CurrencyTypeId { get; set; }
 
         [Required]
         [DisplayName("Country")]
-        public int? CountryId { get; set; }
+        public string CountryId { get; set; }
 
         [DisplayName("Main Context")]
         public bool IsMainContext { get; set; }

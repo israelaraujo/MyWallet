@@ -117,58 +117,59 @@ namespace MyWallet.Data.Repository
 
         public IEnumerable<EntryDTO> GetIncomeByFilter(ReportFilterDTO filter)
         {
-            IQueryable<Income> query = _context
-                .Income
-                .Include(i => i.BankAccount)
-                .Include(i => i.Category)
-                .Where(i => i.ContextId == filter.ContextId);
+            return null;
+            //IQueryable<Income> query = _context
+            //    .Income
+            //    .Include(i => i.BankAccount)
+            //    .Include(i => i.Category)
+            //    .Where(i => i.ContextId == filter.ContextId);
 
 
-            if (filter.StartDate.HasValue)
-            {
-                query = query.Where(i => i.Date >= filter.StartDate);
-            }
-            if (filter.EndDate.HasValue)
-            {
-                query = query.Where(i => i.Date <= filter.EndDate);
-            }
-            if (filter.CategoriesId != null)
-            {
-                query = query.Where(i => filter.CategoriesId.Contains(i.CategoryId));
-            }
-            if (filter.BankAccountsId != null)
-            {
-                query = query.Where(i => filter.BankAccountsId.Contains(i.BankAccountId));
-            }
-            if (filter.StartValue.HasValue)
-            {
-                query = query.Where(i => i.Value >= filter.StartValue);
-            }
-            if (filter.EndValue.HasValue)
-            {
-                query = query.Where(i => i.Value <= filter.EndValue);
-            }
-            if (!string.IsNullOrEmpty(filter.Description))
-            {
-                query = query.Where(i => i.Description.Contains(filter.Description));
-            }
-            if (filter.Situation.HasValue)
-            {
-                query = query.Where(i => i.Received == filter.Situation);
-            }
+            //if (filter.StartDate.HasValue)
+            //{
+            //    query = query.Where(i => i.Date >= filter.StartDate);
+            //}
+            //if (filter.EndDate.HasValue)
+            //{
+            //    query = query.Where(i => i.Date <= filter.EndDate);
+            //}
+            //if (filter.CategoriesId != null)
+            //{
+            //    query = query.Where(i => filter.CategoriesId.Contains(i.CategoryId));
+            //}
+            //if (filter.BankAccountsId != null)
+            //{
+            //    query = query.Where(i => filter.BankAccountsId.Contains(i.BankAccountId));
+            //}
+            //if (filter.StartValue.HasValue)
+            //{
+            //    query = query.Where(i => i.Value >= filter.StartValue);
+            //}
+            //if (filter.EndValue.HasValue)
+            //{
+            //    query = query.Where(i => i.Value <= filter.EndValue);
+            //}
+            //if (!string.IsNullOrEmpty(filter.Description))
+            //{
+            //    query = query.Where(i => i.Description.Contains(filter.Description));
+            //}
+            //if (filter.Situation.HasValue)
+            //{
+            //    query = query.Where(i => i.Received == filter.Situation);
+            //}
 
-            var querySQL = query.ToString();
+            //var querySQL = query.ToString();
 
-            return query.Select(i => new EntryDTO
-            {
-                BankAccount = i.BankAccount.Name,
-                Category = i.Category.Name,
-                Date = i.Date,
-                Description = i.Description,
-                IsPaid = i.Received,
-                Value = i.Value
-            })
-            .ToList();
+            //return query.Select(i => new EntryDTO
+            //{
+            //    BankAccount = i.BankAccount.Name,
+            //    Category = i.Category.Name,
+            //    Date = i.Date,
+            //    Description = i.Description,
+            //    IsPaid = i.Received,
+            //    Value = i.Value
+            //})
+            //.ToList();
         }
     }
 }

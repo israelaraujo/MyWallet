@@ -1,4 +1,7 @@
-﻿using System;
+﻿using MyWallet.Data.RavenDB;
+using Raven.Client.Documents;
+using Raven.Client.Documents.Session;
+using System;
 
 namespace MyWallet.Data.Repository
 {
@@ -6,9 +9,13 @@ namespace MyWallet.Data.Repository
     {
         private MyWalletDBContext _context;
 
+        private readonly IDocumentStore _documentStore;
+        private readonly IDocumentSession _session;
+
         public UnitOfWork()
         {
-            _context = new MyWalletDBContext();
+            _documentStore = RavenDocumentStoreHolder.Instance;
+            _session = _documentStore.OpenSession();
         }
 
         private BankAccountRepository _bankAccountRepository;
@@ -29,12 +36,12 @@ namespace MyWallet.Data.Repository
         public CurrencyTypeRepository CurrencyTypeRepository => _currencyTypeRepository ?? new CurrencyTypeRepository(_context);
         public ExpenseRepository ExpenseRepository => _expenseRepository ?? new ExpenseRepository(_context);
         public IncomeRepository IncomeRepository => _incomeRepository ?? new IncomeRepository(_context);
-        public UserRepository UserRepository => _userRepository ?? new UserRepository(_context);
+        public UserRepository UserRepository => _userRepository ?? new UserRepository(_session);
         public ReportRepository ReportRepository => _reportRepository ?? new ReportRepository(_context);
 
         public void Commit()
         {
-            _context.SaveChanges();
+            _session.SaveChanges();
         }
 
         public void Dispose()

@@ -11,9 +11,9 @@ namespace MyWallet.Web.ViewModels.Import
 
         public DateTime Date { get; set; }
         public string Description { get; set; }
-        public int CategoryId { get; set; }
+        public string CategoryId { get; set; }
         public string Category { get; set; }
-        public int BankAccountId { get; set; }
+        public string BankAccountId { get; set; }
         public string BankAccount { get; set; }
         public decimal Value { get; set; }
         public bool IsPaid { get; set; }

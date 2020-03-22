@@ -14,7 +14,7 @@ namespace MyWallet.Data.Repository
             _context = context;
         }
 
-        public Income GetById(int id)
+        public Income GetById(string id)
         {
             return _context.Income.Find(id);
         }
@@ -34,7 +34,7 @@ namespace MyWallet.Data.Repository
             _context.Entry(income).State = EntityState.Modified;
         }
 
-        public IEnumerable<Income> GetByContextId(int contextId)
+        public IEnumerable<Income> GetByContextId(string contextId)
         {
             var incomeList = _context.Income.Where(i => i.ContextId == contextId)
                   .Include(i => i.BankAccount)

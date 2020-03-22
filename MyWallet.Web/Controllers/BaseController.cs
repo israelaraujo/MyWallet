@@ -8,12 +8,12 @@ namespace MyWallet.Web.Controllers
 {
     public abstract class BaseController : Controller
     {
-        protected int GetCurrentUserId()
+        protected string GetCurrentUserId()
         {
             return GetUserToken().UserId;
         }
 
-        protected int GetCurrentContextId()
+        protected string GetCurrentContextId()
         {
             return GetUserToken().MainContextId;
         }

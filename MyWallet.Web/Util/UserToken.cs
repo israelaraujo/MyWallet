@@ -2,8 +2,8 @@
 {
     public class UserToken
     {
-        public int UserId { get; set; }
+        public string UserId { get; set; }
         public string Name { get; set; }
-        public int MainContextId { get; set; }
+        public string MainContextId { get; set; }
     }
 }

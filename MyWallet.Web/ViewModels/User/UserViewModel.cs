@@ -5,7 +5,7 @@ namespace MyWallet.Web.ViewModels.User
 {
     public class UserViewModel
     {
-        public int Id { get; set; }
+        public string Id { get; set; }
 
         [Required]
         [Display(Name = "Name")]
