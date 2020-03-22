@@ -25,7 +25,12 @@ namespace MyWallet.Data.Repository
 
         public User GetByEmailAndPassword(string email, string password)
         {
-            return _session.Query<User>().FirstOrDefault(u => u.Email == email && u.Password == password);
+            var user = _session.Query<User>().FirstOrDefault(u => u.Email == email && u.Password == password);
+            var context = _session.Query<Context>().FirstOrDefault(c => c.UserId == user.Id && c.IsMainContext);
+
+            user.SetTheMainContext(context);
+
+            return user;
         }
     }
 }

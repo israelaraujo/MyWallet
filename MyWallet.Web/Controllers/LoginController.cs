@@ -1,4 +1,5 @@
-﻿using MyWallet.Data.Repository;
+﻿using MyWallet.Common.Util;
+using MyWallet.Data.Repository;
 using MyWallet.Web.Util;
 using MyWallet.Web.ViewModels.Shared;
 using System.Web.Mvc;
@@ -29,8 +30,7 @@ namespace MyWallet.Web.Controllers
         {
             if (ModelState.IsValid)
             {
-                var userDatabase = _unitOfWork.UserRepository
-                    .GetByEmailAndPassword(loginViewModel.Email, loginViewModel.Password);
+                var userDatabase = _unitOfWork.UserRepository.GetByEmailAndPassword(loginViewModel.Email, CryptographyUtil.Encrypt(loginViewModel.Password));
 
                 if (userDatabase == null)
                 {

@@ -1,7 +1,7 @@
 ﻿using System.Security.Cryptography;
 using System.Text;
 
-namespace MyWallet.Web.Util
+namespace MyWallet.Common.Util
 {
     public class CryptographyUtil
     {
