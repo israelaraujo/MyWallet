@@ -6,7 +6,7 @@ namespace MyWallet.Data.Domain
 {
     public class User
     {
-        public int Id { get; set; }
+        public string Id { get; set; }
         public string Name { get; set; }
         public string LastName { get; set; }
         public string Email { get; set; }
@@ -25,7 +25,7 @@ namespace MyWallet.Data.Domain
             return Contexts.FirstOrDefault(c => c.IsMainContext);
         }
 
-        public int GetTheMainContextId()
+        public string GetTheMainContextId()
         {
             return GetTheMainContext().Id;
         }
