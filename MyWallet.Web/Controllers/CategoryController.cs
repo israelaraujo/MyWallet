@@ -111,11 +111,7 @@ namespace MyWallet.Web.Controllers
         [HttpPost]
         public ActionResult Delete(CategoryViewModel categoryViewModel)
         {
-            var category = new Category()
-            {
-                Id = categoryViewModel.Id,
-            };
-            _unitOfWork.CategoryRepository.Delete(category);
+            _unitOfWork.CategoryRepository.Delete(categoryViewModel.Id);
             _unitOfWork.Commit();
 
             return RedirectToAction("Index");

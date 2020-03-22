@@ -20,9 +20,9 @@ namespace MyWallet.Data.Repository
             session.Store(category);
         }
 
-        public void Delete(Category category)
+        public void Delete(string categoryId)
         {
-            session.Delete(category);
+            session.Delete(categoryId);
         }
 
         public IEnumerable<Category> GetByName(IEnumerable<string> categories, string contextId)
@@ -34,13 +34,7 @@ namespace MyWallet.Data.Repository
 
         public IEnumerable<Category> GetByContextId(string contextId)
         {
-            return null;
-            //TODO: implement later index query
-            //var user = session.Query<User>().FirstOrDefault(u => u.Id == userId);
-
-            //var categories = user.Categories.Where(c => c.ContextId == contextId);
-
-            //return categories;
+            return session.Query<Category>().Where(c => c.ContextId == contextId);
         }
 
         public IEnumerable<Category> GetStandardCategories()
