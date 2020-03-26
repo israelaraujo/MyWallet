@@ -34,7 +34,6 @@ namespace MyWallet.Data.Repository
         public IEnumerable<Expense> GetAllByContextId(string contextId)
         {
             var expenses = _session.Query<Expense>()
-                .Include(e => e.ContextId)
                 .Include(e => e.BankAccountId)
                 .Include(e => e.CategoryId)
                 .Where(e => e.ContextId == contextId)
@@ -42,7 +41,6 @@ namespace MyWallet.Data.Repository
 
             foreach (var e in expenses)
             {
-                e.Context = _session.Load<Context>(e.ContextId);
                 e.BankAccount = _session.Load<BankAccount>(e.BankAccountId);
                 e.Category = _session.Load<Category>(e.CategoryId);
             }
