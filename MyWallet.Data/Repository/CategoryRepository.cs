@@ -34,7 +34,7 @@ namespace MyWallet.Data.Repository
 
         public IEnumerable<Category> GetByContextId(string contextId)
         {
-            return session.Query<Category>().Where(c => c.ContextId == contextId);
+            return session.Query<Category>().Where(c => c.ContextId == contextId).ToList();
         }
 
         public IEnumerable<Category> GetStandardCategories()
