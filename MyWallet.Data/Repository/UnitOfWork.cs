@@ -35,7 +35,7 @@ namespace MyWallet.Data.Repository
         public CountryRepository CountryRepository => _countryRepository ?? new CountryRepository(_context);
         public CurrencyTypeRepository CurrencyTypeRepository => _currencyTypeRepository ?? new CurrencyTypeRepository(_session);
         public ExpenseRepository ExpenseRepository => _expenseRepository ?? new ExpenseRepository(_session);
-        public IncomeRepository IncomeRepository => _incomeRepository ?? new IncomeRepository(_context);
+        public IncomeRepository IncomeRepository => _incomeRepository ?? new IncomeRepository(_session);
         public UserRepository UserRepository => _userRepository ?? new UserRepository(_session);
         public ReportRepository ReportRepository => _reportRepository ?? new ReportRepository(_context);
 
@@ -46,18 +46,12 @@ namespace MyWallet.Data.Repository
 
         public void Dispose()
         {
-            Dispose(true);
-            GC.SuppressFinalize(this);
-        }
-
-        protected virtual void Dispose(bool disposing)
-        {
-            if (!this._disposed && disposing)
+            if (!_disposed)
             {
-                //_documentStore.Dispose();
-                //_session.Dispose();
+                _session.Dispose();
+                GC.SuppressFinalize(this);
             }
-            this._disposed = true;
+            _disposed = true;
         }
     }
 }

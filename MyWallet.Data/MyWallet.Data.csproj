@@ -140,6 +140,7 @@
     <Compile Include="Repository\IncomeRepository.cs" />
     <Compile Include="Repository\Index\Currency_GetSymbolByContextId.cs" />
     <Compile Include="Repository\Index\Expense_ByContextId.cs" />
+    <Compile Include="Repository\Index\Income_ByContextId.cs" />
     <Compile Include="Repository\ReportRepository.cs" />
     <Compile Include="Repository\UnitOfWork.cs" />
     <Compile Include="Repository\UserRepository.cs" />

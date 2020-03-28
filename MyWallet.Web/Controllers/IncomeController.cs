@@ -19,9 +19,11 @@ namespace MyWallet.Web.Controllers
         // GET: Income
         public ActionResult Index()
         {
-            var incomeList = _unitOfWork.IncomeRepository.GetByContextId(GetCurrentContextId());
+            var contextId = GetCurrentContextId();
+
+            var incomeList = _unitOfWork.IncomeRepository.GetByContextId(contextId);
             var viewModelList = new ListAllIncomeViewModel();
-            viewModelList.Currency = "€";
+            viewModelList.Currency = _unitOfWork.CurrencyTypeRepository.GetCurrencySymbolByContextId(contextId);
 
             foreach (var income in incomeList)
             {
@@ -59,7 +61,7 @@ namespace MyWallet.Web.Controllers
                 Received = viewModel.Received,
                 Value = viewModel.Value.Value
             };
-            _unitOfWork.IncomeRepository.Add(income);
+            _unitOfWork.IncomeRepository.Save(income);
             _unitOfWork.Commit();
 
             return RedirectToAction("Index");
@@ -68,7 +70,7 @@ namespace MyWallet.Web.Controllers
         [HttpPost]
         public HttpStatusCodeResult Delete(string id)
         {
-            _unitOfWork.IncomeRepository.Delete(new Income { Id = id});
+            _unitOfWork.IncomeRepository.Delete(id);
             _unitOfWork.Commit();
 
             return new HttpStatusCodeResult(HttpStatusCode.OK);
@@ -141,7 +143,7 @@ namespace MyWallet.Web.Controllers
                 income.Value = viewModel.Value.Value;
                 income.Received = viewModel.Received;
 
-                _unitOfWork.IncomeRepository.Update(income);
+                _unitOfWork.IncomeRepository.Save(income);
                 _unitOfWork.Commit();
 
                 return new HttpStatusCodeResult(HttpStatusCode.OK);
@@ -151,7 +153,6 @@ namespace MyWallet.Web.Controllers
                 return new HttpStatusCodeResult(HttpStatusCode.BadRequest);
             }
         }
-
 
         protected override void Dispose(bool disposing)
         {

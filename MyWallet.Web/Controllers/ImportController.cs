@@ -87,7 +87,7 @@ namespace MyWallet.Web.Controllers
                             Observation = entry.Observation,
                             Value = entry.Value
                         };
-                        _unitOfWork.IncomeRepository.Add(income);
+                        _unitOfWork.IncomeRepository.Save(income);
                     }
                     else
                     {

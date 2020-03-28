@@ -79,6 +79,7 @@ namespace MyWallet.Data.RavenDB
             // TODO: add assembly
             new Expense_ByContextId().Execute(documentStore);
             new Currency_GetSymbolByContextId().Execute(documentStore);
+            new Income_ByContextId().Execute(documentStore);
         }
     }
 }

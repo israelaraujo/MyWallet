@@ -1,50 +1,50 @@
 ﻿using MyWallet.Data.Domain;
+using MyWallet.Data.Repository.Index;
+using Raven.Client.Documents.Session;
 using System.Collections.Generic;
-using System.Data.Entity;
 using System.Linq;
 
 namespace MyWallet.Data.Repository
 {
     public class IncomeRepository
     {
-        private MyWalletDBContext _context;
+        private IDocumentSession _session;
 
-        public IncomeRepository(MyWalletDBContext context)
+        public IncomeRepository(IDocumentSession session)
         {
-            _context = context;
+            _session = session;
         }
 
         public Income GetById(string id)
         {
-            return _context.Income.Find(id);
+            return _session.Load<Income>(id);
         }
 
-        public void Add(Income income)
+        public void Save(Income income)
         {
-            _context.Income.Add(income);
+            _session.Store(income);
         }
 
-        public void Delete(Income income)
+        public void Delete(string incomeId)
         {
-            _context.Entry(income).State = EntityState.Deleted;
-        }
-
-        public void Update(Income income)
-        {
-            _context.Entry(income).State = EntityState.Modified;
+            _session.Delete(incomeId);
         }
 
         public IEnumerable<Income> GetByContextId(string contextId)
         {
-            return new List<Income>();
-
-            var incomeList = _context.Income.Where(i => i.ContextId == contextId)
-                  .Include(i => i.BankAccount)
-                  .Include(i => i.Category)
-                  .Include(i => i.Context)
-                  .ToList();
-
-            return incomeList;
+            return _session.Query<Income_ByContextId.Result, Income_ByContextId>()
+                .Where(x => x.ContextId == contextId)
+                .Select(x => new Income
+                {
+                    Id = x.Id,
+                    Description = x.Description,
+                    Value = x.Value,
+                    Date = x.Date,
+                    Received = x.Received,
+                    BankAccount = new BankAccount { Name = x.BankAccount },
+                    Category = new Category { Name = x.Category },
+                })
+                .ToList();
         }
     }
 }
