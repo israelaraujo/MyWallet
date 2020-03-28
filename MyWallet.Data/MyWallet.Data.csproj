@@ -138,6 +138,7 @@
     <Compile Include="Repository\CurrencyTypeRepository.cs" />
     <Compile Include="Repository\ExpenseRepository.cs" />
     <Compile Include="Repository\IncomeRepository.cs" />
+    <Compile Include="Repository\Index\Expense\Expense_ByContextId.cs" />
     <Compile Include="Repository\ReportRepository.cs" />
     <Compile Include="Repository\UnitOfWork.cs" />
     <Compile Include="Repository\UserRepository.cs" />
@@ -146,9 +147,7 @@
     <None Include="App.config" />
     <None Include="packages.config" />
   </ItemGroup>
-  <ItemGroup>
-    <Folder Include="Repository\Index\Expense\" />
-  </ItemGroup>
+  <ItemGroup />
   <Import Project="$(MSBuildToolsPath)\Microsoft.CSharp.targets" />
   <Target Name="EnsureNuGetPackageBuildImports" BeforeTargets="PrepareForBuild">
     <PropertyGroup>

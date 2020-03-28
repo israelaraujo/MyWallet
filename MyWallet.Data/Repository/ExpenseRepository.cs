@@ -1,4 +1,5 @@
 ﻿using MyWallet.Data.Domain;
+using MyWallet.Data.Repository.Index.Expense;
 using Raven.Client.Documents;
 using Raven.Client.Documents.Linq;
 using Raven.Client.Documents.Session;
@@ -33,19 +34,23 @@ namespace MyWallet.Data.Repository
 
         public IEnumerable<Expense> GetAllByContextId(string contextId)
         {
-            var expenses = _session.Query<Expense>()
-                .Include(e => e.BankAccountId)
-                .Include(e => e.CategoryId)
-                .Where(e => e.ContextId == contextId)
+            var result = _session
+                .Query<Expense_ByContextId.Result, Expense_ByContextId>()
+                .Where(x => x.ContextId == contextId)
+                .Select(x => new Expense
+                {
+                    Id = x.Id,
+                    Description = x.Description,
+                    ContextId = x.ContextId,
+                    BankAccount = new BankAccount { Name = x.BankAccount },
+                    Category = new Category { Name = x.Category },
+                    IsPaid = x.IsPaid,
+                    Value = x.Value,
+                    Date = x.Date
+                })
                 .ToList();
 
-            foreach (var e in expenses)
-            {
-                e.BankAccount = _session.Load<BankAccount>(e.BankAccountId);
-                e.Category = _session.Load<Category>(e.CategoryId);
-            }
-
-            return expenses;
+            return result;
         }
 
     }

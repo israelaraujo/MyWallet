@@ -1,4 +1,5 @@
 ﻿using MyWallet.Data.DBInitializer;
+using MyWallet.Data.Repository.Index.Expense;
 using Raven.Client.Documents;
 using Raven.Client.Documents.Conventions;
 using Raven.Client.Documents.Operations;
@@ -38,12 +39,12 @@ namespace MyWallet.Data.RavenDB
                 }
             };
 
-            _instance = documentStore;
-            _instance.Initialize();
-
+            documentStore.Initialize();
+            RegisterIndexes(documentStore);
             EnsureDatabaseExists(documentStore);
             MyWalletInitializer.SeedInitialData(documentStore);
 
+            _instance = documentStore;
             return _instance;
         }
 
@@ -71,6 +72,11 @@ namespace MyWallet.Data.RavenDB
                     // The database was already created before calling CreateDatabaseOperation
                 }
             }
+        }
+
+        private static void RegisterIndexes(DocumentStore documentStore)
+        {
+            new Expense_ByContextId().Execute(documentStore);
         }
     }
 }
