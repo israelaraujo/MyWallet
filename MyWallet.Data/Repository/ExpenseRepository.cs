@@ -1,5 +1,5 @@
 ﻿using MyWallet.Data.Domain;
-using MyWallet.Data.Repository.Index.Expense;
+using MyWallet.Data.Repository.Index;
 using Raven.Client.Documents;
 using Raven.Client.Documents.Linq;
 using Raven.Client.Documents.Session;

@@ -3,7 +3,7 @@ using Raven.Client.Documents.Indexes;
 using System;
 using System.Linq;
 
-namespace MyWallet.Data.Repository.Index.Expense
+namespace MyWallet.Data.Repository.Index
 {
     public class Expense_ByContextId : AbstractIndexCreationTask<Domain.Expense, Expense_ByContextId.Result>
     {

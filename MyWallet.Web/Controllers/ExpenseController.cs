@@ -24,7 +24,7 @@ namespace MyWallet.Web.Controllers
             var expenseList = _unitOfWork.ExpenseRepository.GetAllByContextId(contextId);
 
             var viewModelList = new ListAllExpensesViewModel();
-            viewModelList.Currency = "€";
+            viewModelList.Currency = _unitOfWork.CurrencyTypeRepository.GetCurrencySymbolByContextId(contextId);
 
             foreach (var item in expenseList)
             {

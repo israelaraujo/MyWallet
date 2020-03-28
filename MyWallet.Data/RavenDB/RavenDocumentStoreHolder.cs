@@ -1,5 +1,5 @@
 ﻿using MyWallet.Data.DBInitializer;
-using MyWallet.Data.Repository.Index.Expense;
+using MyWallet.Data.Repository.Index;
 using Raven.Client.Documents;
 using Raven.Client.Documents.Conventions;
 using Raven.Client.Documents.Operations;
@@ -40,8 +40,8 @@ namespace MyWallet.Data.RavenDB
             };
 
             documentStore.Initialize();
-            RegisterIndexes(documentStore);
             EnsureDatabaseExists(documentStore);
+            RegisterIndexes(documentStore);
             MyWalletInitializer.SeedInitialData(documentStore);
 
             _instance = documentStore;
@@ -76,7 +76,9 @@ namespace MyWallet.Data.RavenDB
 
         private static void RegisterIndexes(DocumentStore documentStore)
         {
+            // TODO: add assembly
             new Expense_ByContextId().Execute(documentStore);
+            new Currency_GetSymbolByContextId().Execute(documentStore);
         }
     }
 }

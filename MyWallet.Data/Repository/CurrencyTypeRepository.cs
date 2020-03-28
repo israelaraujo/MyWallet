@@ -1,33 +1,33 @@
 ﻿using MyWallet.Data.Domain;
 using System.Collections.Generic;
 using System.Linq;
-using System.Data.Entity;
+using Raven.Client.Documents.Session;
+using Raven.Client.Documents;
+using MyWallet.Data.Repository.Index;
 
 namespace MyWallet.Data.Repository
 {
     public class CurrencyTypeRepository
     {
-        private MyWalletDBContext _context;
+        private IDocumentSession _session;
 
-        public CurrencyTypeRepository(MyWalletDBContext context)
+        public CurrencyTypeRepository(IDocumentSession session)
         {
-            _context = context;
+            _session = session;
         }
 
         public IEnumerable<CurrencyType> GetAll()
         {
-            return _context.CurrencyType.ToList();
+            return _session.Query<CurrencyType>().ToList();
         }
 
         public string GetCurrencySymbolByContextId(string contextId)
         {
-            var currencySymbol = _context.Context
-                .Include(c => c.CurrencyType)
-                .Where(c => c.Id == contextId)
-                .Select(c => c.CurrencyType.Symbol)
+            return _session
+                .Query<Currency_GetSymbolByContextId.Result, Currency_GetSymbolByContextId>()
+                .Where(x => x.ContextId == contextId)
+                .Select(x => x.CurrencySymbol)
                 .FirstOrDefault();
-
-            return currencySymbol;
         }
     }
 }

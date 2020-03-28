@@ -32,6 +32,29 @@ namespace MyWallet.Data.Domain
 
         public void SetTheMainContext(Context context)
         {
+            SetAllContextsToNonMainContexts();
+
+            var contextStored = Contexts.FirstOrDefault(c => c.Id == context.Id);
+            if (contextStored != null)
+            {
+                contextStored.IsMainContext = true;
+                return;
+            }
+
+            context.IsMainContext = true;
+            AddContext(context);
+        }
+
+        private void SetAllContextsToNonMainContexts()
+        {
+            foreach (var c in Contexts)
+                c.IsMainContext = false;
+        }
+
+        private void AddContext(Context context)
+        {
+            if (Contexts.Any(c => c.Id == context.Id)) return;
+
             Contexts.Add(context);
         }
     }

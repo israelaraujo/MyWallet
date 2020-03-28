@@ -12,7 +12,7 @@ namespace MyWallet.Data.Repository
 
         public BankAccountRepository(IDocumentSession session)
         {
-            this._session = session;
+            _session = session;
         }
 
         public void Save(BankAccount bankAccount)
