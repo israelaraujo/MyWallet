@@ -33,8 +33,71 @@ namespace MyWallet.Web.Controllers
         [HttpPost]
         public ActionResult Upload(ImportViewModel importViewModel)
         {
-            var contextId = GetCurrentContextId();
+            IEnumerable<ImportViewModel> entries = ReadFileAndAddEntries(importViewModel);
 
+            using (var scope = new TransactionScope())
+            {
+                var contextId = GetCurrentContextId();
+
+                var csvCategories = entries.Select(i => i.Category).Distinct();
+                var allCategories = _unitOfWork.CategoryRepository.CreateIfNotExistsAndReturnAll(csvCategories, contextId);
+
+                var csvBankAccounts = entries.Select(b => b.BankAccount).Distinct();
+                var allBankAccounts = _unitOfWork.BankAccountRepository.CreateIfNotExistsAndReturnAll(csvBankAccounts, contextId);
+
+                foreach (var entry in entries)
+                {
+                    entry.CategoryId = allCategories.FirstOrDefault(c => c.Name == entry.Category).Id;
+                    entry.BankAccountId = allBankAccounts.FirstOrDefault(c => c.Name == entry.BankAccount).Id;
+
+                    SaveEntry(contextId, entry);
+                }
+
+                _unitOfWork.Commit();
+                scope.Complete();
+            }
+
+            return RedirectToAction("Index", "Expense");
+        }
+
+        private void SaveEntry(string contextId, ImportViewModel entry)
+        {
+            if (entry.Value > 0)
+            {
+                var income = new Income
+                {
+                    Description = entry.Description,
+                    BankAccountId = entry.BankAccountId,
+                    CategoryId = entry.CategoryId,
+                    ContextId = contextId,
+                    CreationDate = DateTime.Now,
+                    Date = entry.Date,
+                    Received = entry.IsPaid,
+                    Observation = entry.Observation,
+                    Value = entry.Value
+                };
+                _unitOfWork.IncomeRepository.Save(income);
+            }
+            else
+            {
+                var expense = new Expense
+                {
+                    Description = entry.Description,
+                    BankAccountId = entry.BankAccountId,
+                    CategoryId = entry.CategoryId,
+                    ContextId = contextId,
+                    CreationDate = DateTime.Now,
+                    Date = entry.Date,
+                    IsPaid = entry.IsPaid,
+                    Observation = entry.Observation,
+                    Value = -entry.Value
+                };
+                _unitOfWork.ExpenseRepository.Save(expense);
+            }
+        }
+
+        private IEnumerable<ImportViewModel> ReadFileAndAddEntries(ImportViewModel importViewModel)
+        {
             var entries = new List<ImportViewModel>();
             using (var reader = new StreamReader(importViewModel.File.InputStream, Encoding.Default))
             {
@@ -58,63 +121,9 @@ namespace MyWallet.Web.Controllers
                 }
             }
 
-            using (var scope = new TransactionScope())
-            {
-                var csvCategories = entries.Select(i => i.Category).Distinct();
-                var allCategories = _unitOfWork.CategoryRepository.CreateIfNotExistsAndReturnAll(csvCategories, contextId);
-
-                var csvBankAccounts = entries.Select(b => b.BankAccount).Distinct();
-                var allBankAccounts = _unitOfWork.BankAccountRepository.CreateIfNotExistsAndReturnAll(csvBankAccounts, contextId);
-
-                _unitOfWork.Commit();
-
-                foreach (var entry in entries)
-                {
-                    entry.CategoryId = allCategories.FirstOrDefault(c => c.Name == entry.Category).Id;
-                    entry.BankAccountId = allBankAccounts.FirstOrDefault(c => c.Name == entry.BankAccount).Id;
-
-                    if (entry.Value > 0)
-                    {
-                        var income = new Income
-                        {
-                            Description = entry.Description,
-                            BankAccountId = entry.BankAccountId,
-                            CategoryId = entry.CategoryId,
-                            ContextId = contextId,
-                            CreationDate = DateTime.Now,
-                            Date = entry.Date,
-                            Received = entry.IsPaid,
-                            Observation = entry.Observation,
-                            Value = entry.Value
-                        };
-                        _unitOfWork.IncomeRepository.Save(income);
-                    }
-                    else
-                    {
-                        var expense = new Expense
-                        {
-                            Description = entry.Description,
-                            BankAccountId = entry.BankAccountId,
-                            CategoryId = entry.CategoryId,
-                            ContextId = contextId,
-                            CreationDate = DateTime.Now,
-                            Date = entry.Date,
-                            IsPaid = entry.IsPaid,
-                            Observation = entry.Observation,
-                            Value = -entry.Value
-                        };
-                        _unitOfWork.ExpenseRepository.Save(expense);
-                    }
-                }
-
-                _unitOfWork.Commit();
-
-                scope.Complete();
-            }
-
-            return RedirectToAction("Index", "Expense");
+            return entries;
         }
-       
+
         private decimal ConvertToDecimal(string number)
         {
             return decimal.Parse(number, _numberFormatInfo);
