@@ -6,6 +6,7 @@ using MyWallet.Web.Util;
 using MyWallet.Web.ViewModels.User;
 using System;
 using System.IO;
+using System.Linq;
 using System.Web.Mvc;
 
 namespace MyWallet.Web.Controllers
@@ -129,10 +130,10 @@ namespace MyWallet.Web.Controllers
                 UserId = user.Id,
                 IsMainContext = true,
                 Name = "My Finances (Default)",
-                CountryId = "1", //TODO implement
-                CurrencyTypeId = "1"
+                CurrencyTypeId = _unitOfWork.CurrencyTypeRepository.GetAll().FirstOrDefault().Id // TODO: change it
             };
             _unitOfWork.ContextRepository.Save(mainContext);
+            user.SetTheMainContext(mainContext.Id);
 
             var categories = _unitOfWork.CategoryRepository.GetStandardCategories();
             foreach (var category in categories)

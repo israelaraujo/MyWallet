@@ -1,4 +1,5 @@
 ﻿using MyWallet.Data.Domain;
+using Raven.Client.Documents;
 using Raven.Client.Documents.Session;
 using System.Linq;
 
@@ -26,10 +27,13 @@ namespace MyWallet.Data.Repository
         public User GetByEmailAndPassword(string email, string password)
         {
             // TODO: create index
-            var user = _session.Query<User>().FirstOrDefault(u => u.Email == email && u.Password == password);
-            var context = _session.Query<Context>().FirstOrDefault(c => c.UserId == user.Id && c.IsMainContext);
+            var user = _session
+                .Query<User>()
+                .Include(u => u.MainContextId)
+                .FirstOrDefault(u => u.Email == email && u.Password == password);
 
-            user.SetTheMainContext(context);
+            var mainContextId = _session.Load<Context>(user.MainContextId).Id;
+            user.SetTheMainContext(mainContextId);
 
             return user;
         }

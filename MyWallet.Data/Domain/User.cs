@@ -13,49 +13,35 @@ namespace MyWallet.Data.Domain
         public string Password { get; set; }
         public byte[] Photo { get; set; }
         public DateTime CreationDate { get; set; }
+        public string MainContextId { get; set; }
+        public ICollection<string> ContextIds { get; set; }
+
+        // TODO: because entity framework - remove later
         public ICollection<Context> Contexts { get; set; }
 
         public User()
         {
-            Contexts = new List<Context>();
-        }
-
-        public Context GetTheMainContext()
-        {
-            return Contexts.FirstOrDefault(c => c.IsMainContext);
+            ContextIds = new List<string>();
         }
 
         public string GetTheMainContextId()
         {
-            return GetTheMainContext().Id;
+            return MainContextId;
         }
 
-        public void SetTheMainContext(Context context)
+        public void SetTheMainContext(string contextId)
         {
-            SetAllContextsToNonMainContexts();
+            if (!ContextIds.Any(c => c == contextId))
+                ContextIds.Add(contextId);
 
-            var contextStored = Contexts.FirstOrDefault(c => c.Id == context.Id);
-            if (contextStored != null)
-            {
-                contextStored.IsMainContext = true;
-                return;
-            }
-
-            context.IsMainContext = true;
-            AddContext(context);
+            MainContextId = contextId;
         }
 
-        private void SetAllContextsToNonMainContexts()
+        public void AddContext(string contextId)
         {
-            foreach (var c in Contexts)
-                c.IsMainContext = false;
-        }
+            if (ContextIds.Any(c => c == contextId)) return;
 
-        private void AddContext(Context context)
-        {
-            if (Contexts.Any(c => c.Id == context.Id)) return;
-
-            Contexts.Add(context);
+            ContextIds.Add(contextId);
         }
     }
 }

@@ -81,6 +81,8 @@ namespace MyWallet.Data.DBInitializer
             };
             session.Store(category);
 
+            user.SetTheMainContext(mainContext.Id);
+            user.AddContext(mainContext.Id);
             return user;
         }
     }
