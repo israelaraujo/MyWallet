@@ -71,13 +71,7 @@ namespace MyWallet.Web.Controllers
         [HttpPost]
         public ActionResult Edit(UserViewModel userViewModel) 
         {
-            if (userViewModel.Password.IsNullOrEmpty() && userViewModel.RepeatPassword.IsNullOrEmpty())
-            {
-                ModelState.Remove("Password");
-                ModelState.Remove("RepeatPassword");
-            }
-
-            if (!ModelState.IsValid)
+            if (!IsValidEditUser(userViewModel))
             {
                 SendModelStateErrors();
                 return View(userViewModel);
@@ -108,6 +102,16 @@ namespace MyWallet.Web.Controllers
         }
 
         #region Private methods
+
+        private bool IsValidEditUser(UserViewModel userViewModel)
+        {
+            if (userViewModel.Password.IsNullOrEmpty() && userViewModel.RepeatPassword.IsNullOrEmpty())
+            {
+                ModelState.Remove("Password");
+                ModelState.Remove("RepeatPassword");
+            }
+            return ModelState.IsValid;
+        }
 
         private void SaveNewUser(UserViewModel userViewModel, out User user, out Context mainContext)
         {
