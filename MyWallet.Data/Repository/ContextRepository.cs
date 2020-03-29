@@ -1,4 +1,5 @@
 ﻿using MyWallet.Data.Domain;
+using Raven.Client.Documents;
 using Raven.Client.Documents.Session;
 using System.Collections.Generic;
 using System.Linq;
@@ -7,40 +8,50 @@ namespace MyWallet.Data.Repository
 {
     public class ContextRepository
     {
-        private IDocumentSession session;
+        private IDocumentSession _session;
 
         public ContextRepository(IDocumentSession session)
         {
-            this.session = session;
+            _session = session;
         }
 
         public void Save(Context context)
         {
-            session.Store(context);
+            _session.Store(context);
         }
 
         public void Delete(Context context)
         {
-            session.Delete(context);
+            _session.Delete(context);
         }
 
         public Context GetById(string id)
         {
-            return session.Load<Context>(id);
+            return _session.Load<Context>(id);
         }
 
-        public IEnumerable<Context> GetByUserId(string userId)
+        public IEnumerable<Context> GetWithCurrencyByUserId(string userId)
         {
-            //return session.Query<Context>()
-            //    .Where(c => c.UserId == userId)
-            //    .ToList();
-            return null;
+            var contexts = _session.Query<Context>()
+                .Include(c => c.CurrencyTypeId)
+                .Where(c => c.UserId == userId)
+                .ToList();
+
+            foreach (var context in contexts)
+                context.CurrencyType = _session.Load<CurrencyType>(context.CurrencyTypeId);
+
+            return contexts;
         }
 
         public void SetTheMainContextAsNonMain(string userId)
         {
-            //var mainContext = _context.Context.FirstOrDefault(c => c.UserId == userId && c.IsMainContext);
-            //mainContext.IsMainContext = false;
+            var contexts = _session.Query<Context>().Where(c => c.UserId == userId);
+
+            foreach (var context in contexts)
+            {
+                context.IsMainContext = false;
+                Save(context);
+            }
         }
     }
 }

@@ -14,15 +14,14 @@ namespace MyWallet.Web.ViewModels.Context
         [DisplayName("Currency")]
         public string CurrencyTypeId { get; set; }
 
-        [Required]
-        [DisplayName("Country")]
-        public string CountryId { get; set; }
+        //[Required]
+        //[DisplayName("Country")]
+        //public string CountryId { get; set; }
 
         [DisplayName("Main Context")]
         public bool IsMainContext { get; set; }
 
-        public string CurrencySymbol { get; set; }
-        public string CurrencyName { get; set; }
-        public string CountryName { get; set; }
+        public string Currency { get; set; }
+        //public string CountryName { get; set; }
     }
 }

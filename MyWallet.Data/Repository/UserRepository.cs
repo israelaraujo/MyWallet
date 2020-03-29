@@ -37,5 +37,24 @@ namespace MyWallet.Data.Repository
 
             return user;
         }
+
+        public void UpdateMainContext(string userId, string mainContextId)
+        {
+            var user = _session.Query<User>()
+                .Include(u => u.ContextIds)
+                .FirstOrDefault(u => u.Id == userId);
+
+            user.SetTheMainContext(mainContextId);
+
+            var userContexts = _session.Load<Context>(user.ContextIds);
+
+            foreach (var context in userContexts.Values)
+            {
+                context.IsMainContext = false;
+                _session.Store(context);
+            }
+
+            _session.Store(user);
+        }
     }
 }

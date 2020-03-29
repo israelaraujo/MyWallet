@@ -1,7 +1,6 @@
 ﻿using MyWallet.Data.Domain;
 using MyWallet.Data.Repository;
 using MyWallet.Web.ViewModels.Context;
-using System;
 using System.Collections.Generic;
 using System.Web.Mvc;
 
@@ -19,7 +18,7 @@ namespace MyWallet.Web.Controllers
 
         public ActionResult Index()
         {
-            IEnumerable<Context> listContext = _unitOfWork.ContextRepository.GetByUserId(GetCurrentUserId());
+            IEnumerable<Context> listContext = _unitOfWork.ContextRepository.GetWithCurrencyByUserId(GetCurrentUserId());
             List<ContextViewModel> viewModel = new List<ContextViewModel>();
 
             foreach (var context in listContext)
@@ -28,9 +27,9 @@ namespace MyWallet.Web.Controllers
                 contextVM.Id = context.Id;
                 contextVM.Name = context.Name;
                 contextVM.IsMainContext = context.IsMainContext;
-                contextVM.CountryName = context.Country.Name;
-                contextVM.CurrencySymbol = context.CurrencyType.Symbol;
-                contextVM.CurrencyName = context.CurrencyType.Name;
+                //contextVM.CountryName = context.Country.Name;
+                //contextVM.CurrencySymbol = context.CurrencyType.Symbol;
+                contextVM.Currency = $"{context.CurrencyType.Symbol} ({context.CurrencyType.Name})";
 
                 viewModel.Add(contextVM);
             }
@@ -53,14 +52,11 @@ namespace MyWallet.Web.Controllers
                 var context = new Context();
                 context.Name = contextViewModel.Name;
                 context.CurrencyTypeId = contextViewModel.CurrencyTypeId;
-                context.CountryId = contextViewModel.CountryId;
                 context.IsMainContext = contextViewModel.IsMainContext;
                 context.UserId = GetCurrentUserId();
 
                 if (context.IsMainContext)
-                {
                     _unitOfWork.ContextRepository.SetTheMainContextAsNonMain(context.UserId);
-                }
 
                 _unitOfWork.ContextRepository.Save(context);
                 _unitOfWork.Commit();
@@ -84,7 +80,7 @@ namespace MyWallet.Web.Controllers
                 Id = context.Id,
                 Name = context.Name,
                 IsMainContext = context.IsMainContext,
-                CountryId = context.CountryId,
+                //CountryId = context.CountryId,
                 CurrencyTypeId = context.CurrencyTypeId
             };
 
@@ -101,13 +97,13 @@ namespace MyWallet.Web.Controllers
                 var oldContext = _unitOfWork.ContextRepository.GetById(contextViewModel.Id);
                 oldContext.Name = contextViewModel.Name;
                 oldContext.CurrencyTypeId = contextViewModel.CurrencyTypeId;
-                oldContext.CountryId = contextViewModel.CountryId;
-                oldContext.UserId = GetCurrentUserId();
 
-                if (!oldContext.IsMainContext && contextViewModel.IsMainContext)
+                var userUpdatedMainContext = !oldContext.IsMainContext && contextViewModel.IsMainContext;
+                
+                if (userUpdatedMainContext)
                 {
-                    _unitOfWork.ContextRepository.SetTheMainContextAsNonMain(oldContext.UserId);
-                    oldContext.IsMainContext = contextViewModel.IsMainContext;
+                    _unitOfWork.UserRepository.UpdateMainContext(GetCurrentUserId(), contextViewModel.Id);
+                    oldContext.IsMainContext = true;
                 }
 
                 _unitOfWork.ContextRepository.Save(oldContext);

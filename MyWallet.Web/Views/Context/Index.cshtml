@@ -9,8 +9,7 @@
                         <th>Contexts</th>
                         <th></th>
                         <th>Currency</th>
-                        <th>Symbol</th>
-                        <th>Country</th>
+                        @*<th>Country</th>*@
                     </tr>
                 </thead>
                 @foreach (var context in Model)
@@ -26,14 +25,11 @@
                             }
                         </td>
                         <td>
-                            @context.CurrencyName
+                            @context.Currency
                         </td>
-                        <td>
-                            @context.CurrencySymbol
-                        </td>
-                        <td>
+                        @*<td>
                             @context.CountryName
-                        </td>
+                        </td>*@
                         <td>
                             <a href="@Url.Action("Update", new { id = context.Id })" class="btn btn-warning btn-circle">
                                 <i class="fas fa-pencil-alt"></i>

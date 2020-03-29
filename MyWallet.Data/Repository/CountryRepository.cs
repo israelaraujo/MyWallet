@@ -1,4 +1,5 @@
 ﻿using MyWallet.Data.Domain;
+using Raven.Client.Documents.Session;
 using System.Collections.Generic;
 using System.Linq;
 
@@ -6,16 +7,16 @@ namespace MyWallet.Data.Repository
 {
     public class CountryRepository
     {
-        private MyWalletDBContext _context;
+        private IDocumentSession _session;
 
-        public CountryRepository(MyWalletDBContext context)
+        public CountryRepository(IDocumentSession session)
         {
-            _context = context;
+            _session = session;
         }
 
         public IEnumerable<Country> GetAll()
         {
-            return _context.Country.ToList();
+            return _session.Query<Country>().ToList();
         }
     }
 }

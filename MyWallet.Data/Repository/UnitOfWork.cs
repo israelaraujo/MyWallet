@@ -32,7 +32,7 @@ namespace MyWallet.Data.Repository
         public BankAccountRepository BankAccountRepository => _bankAccountRepository ?? new BankAccountRepository(_session);
         public CategoryRepository CategoryRepository => _categoryRepository ?? new CategoryRepository(_session);
         public ContextRepository ContextRepository => _contextRepository ?? new ContextRepository(_session);
-        public CountryRepository CountryRepository => _countryRepository ?? new CountryRepository(_context);
+        public CountryRepository CountryRepository => _countryRepository ?? new CountryRepository(_session);
         public CurrencyTypeRepository CurrencyTypeRepository => _currencyTypeRepository ?? new CurrencyTypeRepository(_session);
         public ExpenseRepository ExpenseRepository => _expenseRepository ?? new ExpenseRepository(_session);
         public IncomeRepository IncomeRepository => _incomeRepository ?? new IncomeRepository(_session);
